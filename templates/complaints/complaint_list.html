@@ -1,0 +1,87 @@
+{% extends 'complaints/base.html' %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-primary mb-2">All Complaints</h2>
+  </div>
+
+  <form class="row g-2 mb-4" method="get">
+    <div class="col-md-4">
+      <input
+        type="text"
+        name="q"
+        class="form-control"
+        placeholder="🔍 Search complaints..."
+        value="{{ q }}"
+      />
+    </div>
+
+    <div class="col-md-3">
+      <select name="category" class="form-select">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+        <option value="{{ cat }}" {% if category == cat %}selected{% endif %}>
+          {{ cat }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <select name="status" class="form-select">
+        <option value="">All Statuses</option>
+        {% for st in statuses %}
+        <option value="{{ st }}" {% if status == st %}selected{% endif %}>
+          {{ st }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="col-md-2">
+      <button class="btn btn-primary w-100" type="submit">
+        <i class="bi bi-funnel"></i> Filter
+      </button>
+    </div>
+  </form>
+
+  <!-- Complaint List -->
+  <div class="list-group shadow-sm rounded-3">
+    {% for c in complaints %}
+    <a
+      class="list-group-item list-group-item-action py-3"
+      href="{% url 'complaint_detail' c.pk %}"
+    >
+      <div class="d-flex w-100 justify-content-between align-items-start">
+        <h5 class="mb-1 fw-semibold text-dark">{{ c.title }}</h5>
+        <small class="text-muted">{{ c.created_at|date:'Y-m-d H:i' }}</small>
+      </div>
+
+      <p class="mb-2 text-muted">{{ c.description|truncatechars:140 }}</p>
+
+      <div class="d-flex flex-wrap justify-content-between align-items-center small text-muted">
+        <span><i class="bi bi-tag"></i> {{ c.category }}</span>
+        <span>
+          <span class="badge
+            {% if c.status == 'Resolved' %} bg-success
+            {% elif c.status == 'In Progress' %} bg-warning text-dark
+            {% elif c.status == 'Pending' %} bg-secondary
+            {% else %} bg-light text-dark
+            {% endif %}
+          ">
+            {{ c.status }}
+          </span>
+        </span>
+        <span><i class="bi bi-person"></i> {{ c.user.username }}</span>
+      </div>
+    </a>
+    {% empty %}
+    <div class="text-center py-4 text-muted">
+      <i class="bi bi-emoji-neutral fs-3 d-block mb-2"></i>
+      <p>No complaints found.</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

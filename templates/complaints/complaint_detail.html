@@ -1,0 +1,66 @@
+{% extends 'complaints/base.html' %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4">
+          <h2 class="fw-bold text-primary mb-3">{{ complaint.title }}</h2>
+
+          <div class="mb-3 text-muted">
+            <span class="me-3">
+              <i class="bi bi-tag"></i>
+              <strong>Category:</strong> {{ complaint.category }}
+            </span>
+            <span>
+              <i class="bi bi-flag"></i>
+              <strong>Status:</strong>
+              <span class="badge 
+                {% if complaint.status == 'Resolved' %} bg-success
+                {% elif complaint.status == 'In Progress' %} bg-warning text-dark
+                {% elif complaint.status == 'Pending' %} bg-secondary
+                {% else %} bg-light text-dark
+                {% endif %}
+              ">
+                {{ complaint.status }}
+              </span>
+            </span>
+          </div>
+
+          <p class="mb-3">
+            <i class="bi bi-geo-alt"></i>
+            <strong>Location:</strong> {{ complaint.location }}
+          </p>
+
+          <p class="fs-6">{{ complaint.description }}</p>
+
+          {% if complaint.image %}
+          <div class="my-4 text-center">
+            <img
+              src="{{ complaint.image.url }}"
+              class="img-fluid rounded shadow-sm"
+              alt="Complaint image"
+              style="max-height: 400px; object-fit: cover;"
+            />
+          </div>
+          {% endif %}
+
+          {% if complaint.remarks %}
+          <hr />
+          <h5 class="fw-semibold text-success">
+            <i class="bi bi-chat-left-dots"></i> Remarks / Response
+          </h5>
+          <p class="mb-0">{{ complaint.remarks }}</p>
+          {% endif %}
+
+          <div class="d-flex justify-content-end mt-4">
+            <a href="{% url 'complaint_list' %}" class="btn btn-outline-secondary">
+              <i class="bi bi-arrow-left"></i> Back
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
